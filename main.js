@@ -15,21 +15,25 @@ var answerHidden = "";
 var alreadyGuessed = [];
 var allAnswers = ["rudabega", "karaoke", "banana",	 "gameboy", "pumpkin", "pumpernickel", "juniper", "agonized", "repugnant", "besmirch", "deadpan"];
 var randy = Math.floor(Math.random() * allAnswers.length);
+var newString = "";
+
 
 // ===================================
 // 		GAME PLAY
 // ===================================
 function gamePlay(){
-	guess();
+	console.log("gamePlay function");
 	if(answerHidden === newAnswer.answer && totalGuesses > 0){
 		console.log("You WIN!");
-	}	
+	}
+	guess();	
 };
 
 // ===================================
 // 		USER GUESS- Recursive
-// ===================================
+// =================================== 
 function guess(){
+	console.log("guess function");
 	inq.prompt([
 		{
 			type: "input",
@@ -37,7 +41,6 @@ function guess(){
 			name: "userGuess"
 		}
 		]).then(function(response){
-			
 			compareGuess(response);
 
 			if(totalGuesses > 0){
@@ -53,7 +56,8 @@ function guess(){
 // 		COMPARE FUNCTION
 // ===================================
 function compareGuess(response){
-	totalGuesses--;
+	console.log("compareGuess Function");
+	totalGuesses = totalGuesses - 1;
 	console.log("Guesses Left: " + totalGuesses);
 	alreadyGuessed.push(response.userGuess);
 	console.log("Already Guessed: " + alreadyGuessed); 
@@ -69,9 +73,8 @@ function compareGuess(response){
 	}else{
 		console.log("Nope!");
 	}
-	// console.log(displayArray); 					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	newAnswer.answerDisplay = displayArray.join();
-	console.log(newAnswer.answerDisplay);
+	newString = displayArray.join("");
+	console.log("New String: " + newString);
 };
 
 //Create new answer object from constructor
