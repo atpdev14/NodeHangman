@@ -1,13 +1,3 @@
-//create wordConstructor in another file that prints the unsolved answer
-//save the hidden answer and revealed answer as global arrays
-//create a prompt function in a seperate file that prompts the user to guess a letter
-//create a function that takes the user's guess and the unhidden answer as arguments
-	//and compares their values to see if the letter exists in the word
-
-// CURRENT STATE
-// -Convert display to an array to update values then back to a string to log it
-// -currently has throw error.  Can not find module.
-
 var fs = require("fs");
 var wordConstructor = require("./wordConstructor.js");
 var inq = require("inquirer");
@@ -16,16 +6,6 @@ var allAnswers = ["rudabega", "karaoke", "banana",	 "gameboy", "pumpkin", "pumpe
 var randy = Math.floor(Math.random() * allAnswers.length);
 var display;
 
-
-// ===================================
-// 		GAME PLAY
-// ===================================
-function gamePlay(){
-	if(display === newAnswer.answer && totalGuesses > 0){
-		console.log("You WIN!");
-	}
-	guess();	
-};
 
 // ===================================
 // 		USER GUESS
@@ -39,13 +19,6 @@ function guess(){
 		}
 		]).then(function(response){
 			compareGuess(response);
-
-			if(totalGuesses > 0){
-				gamePlay();
-			}else {
-				console.log("Game Over!");
-			}				
-
 		 });
 };
 
@@ -70,7 +43,7 @@ function compareGuess(response){
 		}
 	}else{
 		console.log("Nope!");
-		gamePlay();
+		guess();
 	}
 	display = display.join("");
 	console.log("New String: " + display);
@@ -78,14 +51,46 @@ function compareGuess(response){
 };
 
 
-//Check for a win condition and start the game over
+// ===================================
+// 		CHECK WIN CONDITION
+// =================================== 
 function win(display, answer){
+	//Checks for win condition and restarts game
 	if(display === answer.join("") && totalGuesses > 0){
 		console.log("YOU WIN!");
+		console.log("");
+		console.log("");
+		var randy = Math.floor(Math.random() * allAnswers.length);
 		var newAnswer = new wordConstructor(allAnswers[randy]);
 		newAnswer.print();
-		gamePlay();
+		reset();
+		guess();
+	} 
+	//Checks for lose condition and restarts game
+	else if(display !== answer.join("") && totalGuesses <= 0){
+		console.log("You LOSE!");
+		console.log("");
+		console.log("");
+		var newAnswer = new wordConstructor(allAnswers[randy]);
+		newAnswer.print();
+		reset();
+		guess();
 	}
+	//Continues current game
+	else {
+		guess();
+	};
+};
+
+// ===================================
+// 		RESET GAME
+// =================================== 
+function reset(){
+	alreadyGuessed = [];
+	var randy = Math.floor(Math.random() * allAnswers.length);
+	display = "";
+	var totalGuesses = newAnswer.answer.length + 1;
+	console.log("Total Guesses: " + totalGuesses);
 };
 
 //Create new answer object from constructor
@@ -99,9 +104,7 @@ console.log("Total Guesses: " + totalGuesses);
 
 
 //Start game
-gamePlay();
+guess();
 
-// gamePlay
-// guess
-// compareGuess
+
 
