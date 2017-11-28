@@ -11,29 +11,26 @@
 var fs = require("fs");
 var wordConstructor = require("./wordConstructor.js");
 var inq = require("inquirer");
-var answerHidden = "";
 var alreadyGuessed = [];
 var allAnswers = ["rudabega", "karaoke", "banana",	 "gameboy", "pumpkin", "pumpernickel", "juniper", "agonized", "repugnant", "besmirch", "deadpan"];
 var randy = Math.floor(Math.random() * allAnswers.length);
-var newString = "";
+var display;
 
 
 // ===================================
 // 		GAME PLAY
 // ===================================
 function gamePlay(){
-	console.log("gamePlay function");
-	if(answerHidden === newAnswer.answer && totalGuesses > 0){
+	if(display === newAnswer.answer && totalGuesses > 0){
 		console.log("You WIN!");
 	}
 	guess();	
 };
 
 // ===================================
-// 		USER GUESS- Recursive
+// 		USER GUESS
 // =================================== 
 function guess(){
-	console.log("guess function");
 	inq.prompt([
 		{
 			type: "input",
@@ -56,35 +53,55 @@ function guess(){
 // 		COMPARE FUNCTION
 // ===================================
 function compareGuess(response){
-	console.log("compareGuess Function");
 	totalGuesses = totalGuesses - 1;
 	console.log("Guesses Left: " + totalGuesses);
 	alreadyGuessed.push(response.userGuess);
 	console.log("Already Guessed: " + alreadyGuessed); 
 
 	if(newAnswer.answer.indexOf(response.userGuess) > -1){
-		var displayArray = newAnswer.answerDisplay.split("");
+		console.log("Correct!");
+		display = display.split("");
+
 		for(i = 0; i < newAnswer.answer.length; i++){
 			if(response.userGuess === newAnswer.answer[i]){
-				displayArray[i] = response.userGuess;
-				console.log(newAnswer.answerDisplay);
+				display[i] = response.userGuess;
+				console.log(display);
 			}
 		}
 	}else{
 		console.log("Nope!");
+		gamePlay();
 	}
-	newString = displayArray.join("");
-	console.log("New String: " + newString);
+	display = display.join("");
+	console.log("New String: " + display);
+	win(display, newAnswer.answer);
+};
+
+
+//Check for a win condition and start the game over
+function win(display, answer){
+	if(display === answer.join("") && totalGuesses > 0){
+		console.log("YOU WIN!");
+		var newAnswer = new wordConstructor(allAnswers[randy]);
+		newAnswer.print();
+		gamePlay();
+	}
 };
 
 //Create new answer object from constructor
 var newAnswer = new wordConstructor(allAnswers[randy]);
 newAnswer.print();
+display = newAnswer.answerDisplay;
+
 //Designate number of guesses
-var totalGuesses = newAnswer.answer.length + 3;
+var totalGuesses = newAnswer.answer.length + 1;
 console.log("Total Guesses: " + totalGuesses);
 
 
 //Start game
 gamePlay();
+
+// gamePlay
+// guess
+// compareGuess
 
